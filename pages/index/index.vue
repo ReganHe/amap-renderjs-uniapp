@@ -3,7 +3,8 @@
 		<view :prop="markerList" :change:prop="amap.updateEcharts" id="amap"></view>
 		<view id="infoWindow" v-if="infoWindowVisible">
 			<view class="infoWindow-header">
-				<image class="close" src="@/static/ITkoala-amap/close.png" mode="widthFix"></image>
+				<image class="close" src="@/static/ITkoala-amap/close.png" mode="widthFix"
+					@click="infoWindowVisible=false"></image>
 			</view>
 			<view class="infoWindow-content">
 				<view class="project-info">
@@ -23,13 +24,10 @@
 </template>
 
 <script>
-	const start = 'static/ITkoala-amap/start.png'
-
 	export default {
 		data() {
 			return {
 				markerList: [],
-				dataIndex: '',
 				infoWindowVisible: true
 			}
 		},
@@ -46,27 +44,22 @@
 							lat: 30.590857,
 							lng: 114.393329,
 							projectName: 'project1',
-							icon: start
+							icon: 'static/ITkoala-amap/start.png'
 						},
 						{
 							lat: 30.53114,
 							lng: 114.199008,
 							projectName: 'project2',
-							icon: start
+							icon: 'static/ITkoala-amap/start.png'
 						},
 						{
 							lat: 30.620111,
 							lng: 114.307842,
 							projectName: 'project3',
-							icon: start
+							icon: 'static/ITkoala-amap/start.png'
 						}
 					];
-				}, 1000)
-
-			},
-			//地图点击回调事件
-			onViewClick(params) {
-				this.dataIndex = params.dataIndex
+				}, 1000);
 			},
 			handleDetails() {
 				console.log('handleDetails', this.currentItem)
@@ -76,8 +69,6 @@
 </script>
 
 <script module="amap" lang="renderjs">
-	const selectedStart = 'static/ITkoala-amap/selectedStart.png' //选中的图片
-
 	export default {
 		data() {
 			return {
@@ -136,9 +127,7 @@
 							}
 							prevIcon = item.icon
 							prevMarker = marker
-							marker.setIcon(selectedStart)
-							this.dataIndex = index
-							this.onClick(this.ownerInstanceObj)
+							marker.setIcon('static/ITkoala-amap/selectedStart.png')
 							setTimeout(() => {
 								this.infoWindowVisible = true
 							}, 100)
@@ -153,12 +142,6 @@
 				// 监听 service 层数据变更
 				this.ownerInstanceObj = ownerInstance
 				this.initMarkers()
-			},
-			onClick(ownerInstance) {
-				// 调用 service 层的方法
-				ownerInstance.callMethod('onViewClick', {
-					dataIndex: this.dataIndex
-				})
 			}
 		}
 	}
