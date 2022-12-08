@@ -1,6 +1,21 @@
 <template>
 	<view class="page-projects-index">
 		<view :prop="markerList" :change:prop="amap.updateEcharts" id="amap"></view>
+		<view id="search">
+			<view class="query-key">
+				<input />
+			</view>
+			<view class="query-other">
+				<view class="city-status">
+					<input />
+					<input />
+				</view>
+				<view class="current-position" @click="handleLocation">
+					<image class="image" src="@/static/ITkoala-amap/position.png" mode="widthFix"></image>
+				</view>
+
+			</view>
+		</view>
 		<view id="infoWindow" v-if="infoWindowVisible">
 			<view class="infoWindow-header">
 				<image class="close" src="@/static/ITkoala-amap/close.png" mode="widthFix"
@@ -27,8 +42,13 @@
 	export default {
 		data() {
 			return {
+				model: {
+					queryKey: '',
+					cityId: null,
+					status: null
+				},
 				markerList: [],
-				infoWindowVisible: true
+				infoWindowVisible: true,
 			}
 		},
 		mounted() {
@@ -60,6 +80,9 @@
 						}
 					];
 				}, 1000);
+			},
+			handleLocation() {
+				console.log('handleLocation')
 			},
 			handleDetails() {
 				console.log('handleDetails', this.currentItem)
@@ -158,13 +181,59 @@
 			height: 100%;
 		}
 
+		#search {
+			position: absolute;
+			top: 16rpx;
+			left: 28rpx;
+			right: 28rpx;
+
+			.query-key {
+				height: 64rpx;
+				line-height: 64rpx;
+				background: #FFFFFF;
+				box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.15);
+				border-radius: 8rpx;
+			}
+
+			.query-other {
+				margin-top: 16rpx;
+				display: flex;
+				justify-content: space-between;
+
+				.city-status {
+					height: 64rpx;
+					line-height: 64rpx;
+					background: #FFFFFF;
+					box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.15);
+					border-radius: 8rpx;
+					display: flex;
+				}
+
+				.current-position {
+					width: 64rpx;
+					height: 64rpx;
+					background: #FFFFFF;
+					box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.15);
+					border-radius: 8rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					.image {
+						width: 30rpx;
+						height: 36rpx;
+					}
+
+				}
+			}
+		}
+
 		#infoWindow {
 			position: absolute;
 			bottom: 16rpx;
 			left: 28rpx;
 			right: 28rpx;
 			padding: 32rpx 16rpx 24rpx 28rpx;
-			z-index: 9999;
 			background: #fff;
 			box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.08);
 			border-radius: 16rpx;
