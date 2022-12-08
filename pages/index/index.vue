@@ -23,22 +23,25 @@
 		methods: {
 			// 模拟从后台获取地图数据
 			getMapData() {
-				this.markerList = [{
-						lat: 30.590857,
-						lng: 114.393329,
-						icon: start
-					},
-					{
-						lat: 30.53114,
-						lng: 114.199008,
-						icon: start
-					},
-					{
-						lat: 30.620111,
-						lng: 114.307842,
-						icon: start
-					}
-				]
+				setTimeout(() => {
+					this.markerList = [{
+							lat: 30.590857,
+							lng: 114.393329,
+							icon: start
+						},
+						{
+							lat: 30.53114,
+							lng: 114.199008,
+							icon: start
+						},
+						{
+							lat: 30.620111,
+							lng: 114.307842,
+							icon: start
+						}
+					];
+				}, 1000)
+
 			},
 			//地图点击回调事件
 			onViewClick(params) {
