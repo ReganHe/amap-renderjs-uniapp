@@ -2,13 +2,21 @@
 	<view class="page-projects-index">
 		<view :prop="markerList" :change:prop="amap.updateEcharts" id="amap"></view>
 		<view id="infoWindow" v-if="infoWindowVisible">
+			<view class="infoWindow-header">
+				<image class="close" src="@/static/ITkoala-amap/close.png" mode="widthFix"></image>
+			</view>
 			<view class="infoWindow-content">
-				<text class="infoWindow-text">当前点击的对象的index值为：{{ dataIndex }}</text>
-				<image class="close" src="/static/ITkoala-amap/close.png" mode="widthFix"></image>
+				<view class="project-info">
+					<view class="projectName">{{ currentItem.projectName}}</view>
+					<view class="command" @click="handleDetails">查看详情</view>
+				</view>
+				<view class="project-tags">
+					<view v-if="currentItem.area" class="project-tag area">{{currentItem.area}}</view>
+					<view v-if="currentItem.alarmCount" class="project-tag alarm">报警</view>
+					<view v-if="currentItem.status===2" class="project-tag expired">已过期</view>
+				</view>
 			</view>
-			<view class="sharp">
-				<image src="/static/ITkoala-amap/sharp.png" mode="widthFix"></image>
-			</view>
+
 		</view>
 	</view>
 
@@ -22,7 +30,7 @@
 			return {
 				markerList: [],
 				dataIndex: '',
-				infoWindowVisible: false
+				infoWindowVisible: true
 			}
 		},
 		mounted() {
@@ -37,16 +45,19 @@
 					this.markerList = [{
 							lat: 30.590857,
 							lng: 114.393329,
+							projectName: 'project1',
 							icon: start
 						},
 						{
 							lat: 30.53114,
 							lng: 114.199008,
+							projectName: 'project2',
 							icon: start
 						},
 						{
 							lat: 30.620111,
 							lng: 114.307842,
+							projectName: 'project3',
 							icon: start
 						}
 					];
@@ -56,6 +67,9 @@
 			//地图点击回调事件
 			onViewClick(params) {
 				this.dataIndex = params.dataIndex
+			},
+			handleDetails() {
+				console.log('handleDetails', this.currentItem)
 			}
 		}
 	}
@@ -71,7 +85,13 @@
 				amapJsApiKey: '03ab0effeba13329fc44ce6559bc6a3d',
 				map: null,
 				ownerInstanceObj: null, //service层对象
-				currentItem: null //当前点击的对象
+				currentItem: {
+					projectName: '科学岛高压管道迁改施工',
+					alarmCount: 1,
+					status: 2,
+					statusDesc: '已过期',
+					area: '江夏区'
+				} //当前点击的对象
 			}
 		},
 		mounted() {
@@ -101,7 +121,6 @@
 				let prevMarker = null
 				let prevIcon = null
 				this.markerList.forEach((item, index) => {
-
 					if (!!item.icon) {
 						//添加点标记
 						let marker = new AMap.Marker({
@@ -158,41 +177,87 @@
 
 		#infoWindow {
 			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
+			bottom: 16rpx;
+			left: 28rpx;
+			right: 28rpx;
+			padding: 32rpx 16rpx 24rpx 28rpx;
 			z-index: 9999;
 			background: #fff;
+			box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.08);
+			border-radius: 16rpx;
 
-			.infoWindow-content {
-				padding: 30rpx;
 
-				.infoWindow-text {
-					color: #f00;
-				}
+
+			.infoWindow-header {
+				text-align: right;
 
 				.close {
+					margin-right: 24rpx;
 					width: 32rpx;
 					height: 32rpx;
-					position: absolute;
-					top: -25rpx;
-					right: -15rpx;
 				}
 			}
 
-			.sharp {
-				width: 30rpx;
-				height: 23rpx;
-				position: absolute;
-				bottom: -23rpx;
-				left: 0;
-				right: 0;
-				margin: auto;
+			.infoWindow-content {
+				margin-top: 32rpx;
 
-				image {
-					width: 100%;
-					height: 100%;
-					vertical-align: top;
+				.project-info {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+
+					.projectName {
+						font-family: PingFangSC-Medium;
+						font-size: 32rpx;
+						font-weight: normal;
+						line-height: 40rpx;
+						letter-spacing: 0px;
+						color: #3D3D3D;
+
+					}
+
+					.command {
+						height: 60rpx;
+						line-height: 60rpx;
+						width: 160rpx;
+						text-align: center;
+						background: #0052D9;
+						border-radius: 16rpx;
+						font-family: PingFangSC-Regular;
+						font-size: 28rpx;
+						font-weight: normal;
+						text-align: center;
+						letter-spacing: 0px;
+						color: #FFFFFF;
+					}
+				}
+
+				.project-tags {
+					margin-top: 16rpx;
+					display: flex;
+
+					.project-tag {
+						margin-right: 8rpx;
+						padding: 4rpx 16rpx;
+						border-radius: 8px;
+						color: #FFFFFF;
+						font-family: PingFangSC-Medium;
+						font-size: 12px;
+						font-weight: normal;
+						letter-spacing: 0px;
+
+						&.area {
+							background: #00B578;
+						}
+
+						&.alarm {
+							background: #FA5151;
+						}
+
+						&.expired {
+							background: #FF8F1F;
+						}
+					}
 				}
 			}
 		}
