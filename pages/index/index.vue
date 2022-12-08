@@ -1,6 +1,15 @@
 <template>
 	<view class="page-projects-index">
 		<view :prop="markerList" :change:prop="amap.updateEcharts" id="amap"></view>
+		<view id="infoWindow" v-if="infoWindowVisible">
+			<view class="infoWindow-content">
+				<text class="infoWindow-text">当前点击的对象的index值为：{{ dataIndex }}</text>
+				<image class="close" src="/static/ITkoala-amap/close.png" mode="widthFix"></image>
+			</view>
+			<view class="sharp">
+				<image src="/static/ITkoala-amap/sharp.png" mode="widthFix"></image>
+			</view>
+		</view>
 	</view>
 
 </template>
@@ -12,7 +21,8 @@
 		data() {
 			return {
 				markerList: [],
-				dataIndex: ''
+				dataIndex: '',
+				infoWindowVisible: false
 			}
 		},
 		mounted() {
@@ -60,7 +70,8 @@
 				amapWebServiceKey: '55ad4700fed8a7d878cb5cebb83f093b',
 				amapJsApiKey: '03ab0effeba13329fc44ce6559bc6a3d',
 				map: null,
-				ownerInstanceObj: null //service层对象
+				ownerInstanceObj: null, //service层对象
+				currentItem: null //当前点击的对象
 			}
 		},
 		mounted() {
@@ -100,7 +111,8 @@
 						})
 
 						marker.on('click', (e) => {
-							if (prevMarker) {
+							this.currentItem = item
+							if (!!prevMarker) {
 								prevMarker.setIcon(prevIcon)
 							}
 							prevIcon = item.icon
@@ -108,6 +120,9 @@
 							marker.setIcon(selectedStart)
 							this.dataIndex = index
 							this.onClick(this.ownerInstanceObj)
+							setTimeout(() => {
+								this.infoWindowVisible = true
+							}, 100)
 						})
 
 						this.map.add(marker)
@@ -141,9 +156,45 @@
 			height: 100%;
 		}
 
-		.infoWindow-wrap {
-			margin-left: 50px;
-			color: #f00;
+		#infoWindow {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			z-index: 9999;
+			background: #fff;
+
+			.infoWindow-content {
+				padding: 30rpx;
+
+				.infoWindow-text {
+					color: #f00;
+				}
+
+				.close {
+					width: 32rpx;
+					height: 32rpx;
+					position: absolute;
+					top: -25rpx;
+					right: -15rpx;
+				}
+			}
+
+			.sharp {
+				width: 30rpx;
+				height: 23rpx;
+				position: absolute;
+				bottom: -23rpx;
+				left: 0;
+				right: 0;
+				margin: auto;
+
+				image {
+					width: 100%;
+					height: 100%;
+					vertical-align: top;
+				}
+			}
 		}
 	}
 </style>
