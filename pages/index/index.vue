@@ -49,6 +49,13 @@
 				},
 				markerList: [],
 				infoWindowVisible: true,
+				currentItem: {
+					projectName: '科学岛高压管道迁改施工',
+					alarmCount: 1,
+					status: 2,
+					statusDesc: '已过期',
+					area: '江夏区'
+				} //当前点击的对象
 			}
 		},
 		mounted() {
@@ -83,6 +90,21 @@
 			},
 			handleLocation() {
 				console.log('handleLocation')
+				uni.getLocation({
+					type: 'gcj02',
+					success: function(res) {
+						console.log('当前位置的经度：' + res.longitude);
+						console.log('当前位置的纬度：' + res.latitude);
+						// 创建一个 Marker 实例：
+						let marker = new AMap.Marker({
+							position: [res.longitude, res.latitude],
+							icon: 'static/ITkoala-amap/position.png'
+						})
+						// 将创建的点标记添加到已有的地图实例：
+						this.map.add(marker)
+						this.map.setCenter([res.longitude, res.latitude]);
+					}
+				});
 			},
 			handleDetails() {
 				console.log('handleDetails', this.currentItem)
@@ -99,13 +121,6 @@
 				amapJsApiKey: '03ab0effeba13329fc44ce6559bc6a3d',
 				map: null,
 				ownerInstanceObj: null, //service层对象
-				currentItem: {
-					projectName: '科学岛高压管道迁改施工',
-					alarmCount: 1,
-					status: 2,
-					statusDesc: '已过期',
-					area: '江夏区'
-				} //当前点击的对象
 			}
 		},
 		mounted() {
